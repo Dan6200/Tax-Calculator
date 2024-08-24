@@ -14,6 +14,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -24,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Minus } from "lucide-react";
 import { DialogForm } from "./dialog-form";
 
 const formSchema = z
@@ -33,21 +34,15 @@ const formSchema = z
       required_error: "Your Basic Income is required",
       invalid_type_error: "This must be a number",
     }),
-    transport: z
-      .number({
-        invalid_type_error: "This must be a number",
-      })
-      .optional(),
-    housing: z
-      .number({
-        invalid_type_error: "This must be a number",
-      })
-      .optional(),
   })
   .catchall(
-    z.number({
-      invalid_type_error: "This must be a number",
-    })
+    z.union([
+      z.number({
+        required_error: "This field is required",
+        invalid_type_error: "The value must be a number",
+      }),
+      z.boolean(),
+    ])
   );
 
 export function TaxForm() {
@@ -56,23 +51,22 @@ export function TaxForm() {
   });
   const {
     register,
+    unregister,
     handleSubmit,
     formState: { errors },
   } = form;
 
-  console.log(errors);
-
   const [dynamicFields, setDynamicFields] = useState([]);
 
   function onSubmit(values) {
-    console.log({ ...values, ...dynamicFields });
+    console.log(values);
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-2/3 flex flex-col space-y-8"
+        className="w-2/3 mx-auto flex flex-col space-y-8"
       >
         <FormField
           control={form.control}
@@ -95,52 +89,6 @@ export function TaxForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="transport"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Transportation</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  {...register("transport", { valueAsNumber: true })}
-                  type="number"
-                  step={500}
-                  min={1000}
-                  max={10000000000}
-                />
-              </FormControl>
-              <FormDescription>
-                This is the part of your salary allocated to transportation
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="housing"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Housing</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  {...register("housing", { valueAsNumber: true })}
-                  type="number"
-                  step={500}
-                  min={1000}
-                  max={10000000000}
-                />
-              </FormControl>
-              <FormDescription>
-                This is the part of your salary allocated to housing
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {dynamicFields.length > 0 &&
           dynamicFields.map((fieldName) => (
             <FormField
@@ -152,21 +100,79 @@ export function TaxForm() {
                   <FormLabel>
                     {fieldName[0].toUpperCase() + fieldName.slice(1)}
                   </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      {...register(fieldName, { valueAsNumber: true })}
-                      type="number"
-                      step={500}
-                      min={1000}
-                      max={10000000000}
-                    />
-                  </FormControl>
+                  <div className="flex space-x-2">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        {...register(fieldName, { valueAsNumber: true })}
+                        type="number"
+                        step={500}
+                        min={1000}
+                        max={10000000000}
+                      />
+                    </FormControl>
+                    <Button
+                      variant="outline"
+                      className="w-fit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setDynamicFields(
+                          dynamicFields.filter((entry) => entry !== fieldName)
+                        );
+                        unregister(fieldName);
+                      }}
+                    >
+                      <Minus />
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
           ))}
+        <h3>Statutory Deductions...</h3>
+        <FormField
+          control={form.control}
+          name="nhis"
+          render={({ field }) => (
+            <FormItem className="mt-0 flex space-x-2 items-start space-y-0">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="flex flex-col leading-none space-y-1">
+                <FormLabel>N.H.I.S.?</FormLabel>
+                <FormDescription>
+                  Does your employer contribute to health insurance according to
+                  the National Health Insurance Scheme?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="nhf"
+          render={({ field }) => (
+            <FormItem className="mt-0 flex space-x-2 items-start space-y-0">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="flex flex-col leading-none space-y-1">
+                <FormLabel>N.H.F.?</FormLabel>
+                <FormDescription>
+                  Does your employer contribute towards the National Health
+                  Fund?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline">Add New Fields</Button>
@@ -176,7 +182,7 @@ export function TaxForm() {
               <DialogTitle className="text-center">
                 Add Additional Salary Breakdowns
               </DialogTitle>
-              <DialogDescription>
+              <div className="my-8">
                 <DialogForm
                   {...{
                     setDynamicFields,
@@ -184,7 +190,7 @@ export function TaxForm() {
                     DialogClose,
                   }}
                 />
-              </DialogDescription>
+              </div>
             </DialogHeader>
           </DialogContent>
         </Dialog>

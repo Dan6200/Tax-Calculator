@@ -34,6 +34,14 @@ const formSchema = z
       required_error: "Your Basic Income is required",
       invalid_type_error: "This must be a number",
     }),
+    transportation: z.number({
+      required_error: "Your Basic Income is required",
+      invalid_type_error: "This must be a number",
+    }),
+    housing: z.number({
+      required_error: "Your Basic Income is required",
+      invalid_type_error: "This must be a number",
+    }),
   })
   .catchall(
     z.union([
@@ -48,6 +56,11 @@ const formSchema = z
 export function TaxForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      basic: 1000,
+      transportation: 0,
+      housing: 0,
+    },
   });
   const {
     register,
@@ -64,6 +77,7 @@ export function TaxForm() {
 
   return (
     <Form {...form}>
+      <h2 className="text-center text-2xl">Annual Payroll</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-2/3 mx-auto flex flex-col space-y-8"
@@ -84,7 +98,55 @@ export function TaxForm() {
                   max={10000000000}
                 />
               </FormControl>
-              <FormDescription>This is your basic salary</FormDescription>
+              <FormDescription className="capitalize">
+                This is your basic salary
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="transportation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Transportation</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...register("transportation", { valueAsNumber: true })}
+                  type="number"
+                  step={500}
+                  min={0}
+                  max={10000000000}
+                />
+              </FormControl>
+              <FormDescription className="capitalize">
+                This is your transportation allowance
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="housing"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Housing</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...register("housing", { valueAsNumber: true })}
+                  type="number"
+                  step={500}
+                  min={0}
+                  max={10000000000}
+                />
+              </FormControl>
+              <FormDescription className="capitalize">
+                This is your housing allowance
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -107,7 +169,7 @@ export function TaxForm() {
                         {...register(fieldName, { valueAsNumber: true })}
                         type="number"
                         step={500}
-                        min={1000}
+                        min={0}
                         max={10000000000}
                       />
                     </FormControl>

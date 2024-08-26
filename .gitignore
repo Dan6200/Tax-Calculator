@@ -37,3 +37,4 @@ next-env.d.ts
 
 # Ignore virtual environment directories
 /tax-calc-env
+__pycache__

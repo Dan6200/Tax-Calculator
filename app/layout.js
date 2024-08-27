@@ -12,7 +12,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <main className="container p-8 sm:p-24">
+          <h1 className="font-semibold text-3xl text-center mb-16">
+            Nigerian Tax Calculator
+          </h1>
+          {children}
+        </main>
+      </body>
     </html>
   );
 }

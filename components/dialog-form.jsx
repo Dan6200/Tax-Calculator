@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState, forwardRef } from "react";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,10 @@ const formSchema = z
   })
   .catchall(z.string());
 
-export function DialogForm({ setDynamicFields, dynamicFields, DialogClose }) {
+export const DialogForm = forwardRef(function DialogForm(
+  { setDynamicFields, dynamicFields, DialogClose },
+  dialogFormRef
+) {
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -32,8 +35,7 @@ export function DialogForm({ setDynamicFields, dynamicFields, DialogClose }) {
   const [extraFieldCount, setExtraFieldCount] = useState(0);
 
   function onSubmit(values, e) {
-    e.preventDefault();
-    console.log(values);
+    e.stopPropagation();
     const dontInclude = ["basic", ...dynamicFields];
     const data = Object.values(values).filter(
       (value) => !dontInclude.includes(value)
@@ -49,10 +51,11 @@ export function DialogForm({ setDynamicFields, dynamicFields, DialogClose }) {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col my-8"
+        ref={dialogFormRef}
       >
         <h3 className="mb-8">
           You may add additional fields detailing your payroll breakdown not
-          included in the previous form
+          included in the main form
         </h3>
         <div className="flex space-x-4 mb-8">
           <FormField
@@ -128,4 +131,4 @@ export function DialogForm({ setDynamicFields, dynamicFields, DialogClose }) {
       </form>
     </Form>
   );
-}
+});

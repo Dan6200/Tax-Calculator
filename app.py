@@ -45,39 +45,39 @@ def calculate_tax(taxable_income):
     else:
         tax+= taxable_income * 0.07
         taxable_income-= taxable_income * 0.07
-        return tax
+        return tax if (tax > 0) else 0
     if (taxable_income >= 300000):
         taxable_income -= 300000
         tax += 33000
     else:
         tax+= taxable_income * 0.11
         taxable_income -= taxable_income * 0.11
-        return tax
+        return tax if (tax > 0) else 0
     if (taxable_income >= 500000):
         taxable_income -= 500000
         tax += 75000
     else:
         tax+= taxable_income * 0.15
         taxable_income -= taxable_income * 0.15
-        return tax
+        return tax if (tax > 0) else 0
     if (taxable_income >= 500000):
         taxable_income -= 500000
         tax += 95000
     else:
         tax+= taxable_income * 0.19
         taxable_income -= taxable_income * 0.19
-        return tax
+        return tax if (tax > 0) else 0
     if (taxable_income >= 1600000):
         taxable_income -= 1600000
         tax += 336000
     else:
         tax+= taxable_income * 0.21
         taxable_income -= taxable_income * 0.21
-        return tax
+        return tax if (tax > 0) else 0
     if (taxable_income >= 3200000):
         taxable_income -= 3200000
         tax += 768000
     else:
         tax+= taxable_income * 0.24
         taxable_income -= taxable_income * 0.24
-        return tax
+        return tax if (tax > 0) else 0

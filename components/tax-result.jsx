@@ -50,6 +50,20 @@ export function TaxResult({ taxResult, setPage }) {
             style: "currency",
           })}
         </p>
+        <p className="capitalize text-center">
+          Your annual gross income is{" "}
+          {gross.toLocaleString("en-NG", {
+            currency: "NGN",
+            style: "currency",
+          })}
+        </p>
+        <p className="capitalize text-center">
+          Your annual net income after tax is{" "}
+          {(gross - tax).toLocaleString("en-NG", {
+            currency: "NGN",
+            style: "currency",
+          })}
+        </p>
       </CardContent>
     </>
   );

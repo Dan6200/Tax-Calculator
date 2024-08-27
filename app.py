@@ -33,7 +33,7 @@ def calculate_nontaxincome(salary_breakdowns, gross):
 def calculate_gross(salary_breakdowns):
     gross = 0
     for breakdown in salary_breakdowns.values():
-        if (isinstance(breakdown, float)):
+        if (isinstance(breakdown, float) or isinstance(breakdown, int)):
             gross += breakdown
     return gross
 

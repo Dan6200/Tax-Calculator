@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "@/components/ui/button-loading";
+import { useToast } from "@/components/ui/use-toast";
 import { z } from "zod";
 import {
   Dialog,
@@ -92,6 +93,7 @@ export function TaxForm() {
   const [taxResult, setTaxResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const { toast } = useToast();
 
   async function onSubmit(data, e) {
     // prevent nested form from submitting...
@@ -104,13 +106,26 @@ export function TaxForm() {
     if (data["does_voluntary_pension"] && data["voluntary_pension"])
       data = { ...data, voluntary_pension: data.voluntary_pension * 12 };
     setLoading(true);
-    const response = await axios.post(
-      "https://tax-calculator-62h2.onrender.com/calculate",
-      data
-    );
-    setTaxResult(response.data);
-    setLoading(false);
-    setPage(2);
+    try {
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_API_URL + "/calculate",
+        data
+      );
+      setTaxResult(response.data);
+      console.log(response.data);
+      setLoading(false);
+      setPage(2);
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message;
+      toast({
+        title: "Error Fetching Previous Uploads!",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error("Error Fetching Previous Uploads: ", errorMessage);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

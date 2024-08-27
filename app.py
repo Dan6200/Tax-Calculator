@@ -77,6 +77,7 @@ def calculate_tax(taxable_income):
     if (taxable_income >= 3200000):
         taxable_income -= 3200000
         tax += 768000
+        return tax if (tax > 0) else 0
     else:
         tax+= taxable_income * 0.24
         taxable_income -= taxable_income * 0.24

@@ -112,7 +112,6 @@ export function TaxForm() {
         data
       );
       setTaxResult(response.data);
-      console.log(response.data);
       setLoading(false);
       setPage(2);
     } catch (err) {

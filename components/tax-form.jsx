@@ -104,15 +104,17 @@ export function TaxForm() {
     if (data["does_voluntary_pension"] && data["voluntary_pension"])
       data = { ...data, voluntary_pension: data.voluntary_pension * 12 };
     setLoading(true);
-    const response = await axios.post("http://127.0.0.1:5000/calculate", data);
+    const response = await axios.post(
+      "https://tax-calculator-62h2.onrender.com/calculate",
+      data
+    );
     setTaxResult(response.data);
     setLoading(false);
     setPage(2);
   }
-  console.log(page);
 
   return (
-    <Card className="flex mx-auto w-3/4 flex-col space-y-8">
+    <Card className="flex mx-auto w-3/4 flex-col space-y-8 min-h-[500px] py-8">
       {page < 2 ? (
         <>
           <CardHeader className="flex flex-row justify-between items-center">

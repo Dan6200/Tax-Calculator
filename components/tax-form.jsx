@@ -98,7 +98,6 @@ export function TaxForm() {
   async function onSubmit(data, e) {
     // prevent nested form from submitting...
     if (dialogFormRef.current && dialogFormRef.current.contains(e.target)) {
-      console.log(dialogFormRef.current, e.target);
       e.preventDefault();
       return;
     }

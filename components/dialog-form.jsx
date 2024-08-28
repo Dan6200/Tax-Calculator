@@ -57,14 +57,14 @@ export const DialogForm = forwardRef(function DialogForm(
           You may add additional fields detailing your payroll breakdown not
           included in the main form
         </h3>
-        <div className="flex space-x-4 mb-8">
+        <div className="flex space-x-4 mb-8 flex-1">
           <FormField
             control={form.control}
             name="extra-field-0"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} type="text" className="w-80" />
+                  <Input {...field} type="text" className="w-80 sm:w-[32rem]" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
